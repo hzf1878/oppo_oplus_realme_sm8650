@@ -296,12 +296,12 @@ fi
 # ===== 启用内核级基带保护 =====
 if [[ "$APPLY_BBG" == "y" || "$APPLY_BBG" == "Y" ]]; then
   echo ">>> 正在启用内核级基带保护..."
-  echo "CONFIG_SECURITY_BASEBAND_GUARD=y" >> "$DEFCONFIG_FILE"
+  echo "CONFIG_BBG=y" >> "$DEFCONFIG_FILE"
   cd ./common/security
   wget https://github.com/cctv18/Baseband-guard/archive/refs/heads/master.zip
   unzip -q master.zip
   mv "Baseband-guard-master" baseband-guard
-  printf '\nobj-$(CONFIG_SECURITY_BASEBAND_GUARD) += baseband-guard/\n' >> ./Makefile
+  printf '\nobj-$(CONFIG_BBG) += baseband-guard/\n' >> ./Makefile
   sed -i '/^config LSM$/,/^help$/{ /^[[:space:]]*default/ { /baseband_guard/! s/landlock/landlock,baseband_guard/ } }' ./Kconfig
   awk '
   /endmenu/ { last_endmenu_line = NR }
@@ -319,6 +319,8 @@ if [[ "$APPLY_BBG" == "y" || "$APPLY_BBG" == "Y" ]]; then
     }
   }
   ' ./Kconfig > Kconfig.tmp && mv Kconfig.tmp ./Kconfig
+  sed -i 's/selinuxfs.o //g' "./selinux/Makefile"
+  cat "./baseband-guard/sepatch.txt" >> "./selinux/Makefile"
 fi
 
 # ===== 禁用 defconfig 检查 =====
