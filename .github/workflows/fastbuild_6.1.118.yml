@@ -483,9 +483,9 @@ jobs:
             cd kernel_workspace
             echo "CONFIG_BBG=y" >> ./common/arch/arm64/configs/gki_defconfig
             cd ./common/security
-            wget https://github.com/cctv18/Baseband-guard/archive/refs/heads/master.zip
-            unzip -q master.zip
-            mv "Baseband-guard-master" baseband-guard
+            wget https://github.com/cctv18/Baseband-guard/archive/refs/heads/original.zip
+            unzip -q original.zip
+            mv "Baseband-guard-original" baseband-guard
             printf '\nobj-$(CONFIG_BBG) += baseband-guard/\n' >> ./Makefile
             sed -i '/^config LSM$/,/^help$/{ /^[[:space:]]*default/ { /baseband_guard/! s/landlock/landlock,baseband_guard/ } }' ./Kconfig
             awk '
